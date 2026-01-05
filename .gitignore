@@ -1,0 +1,8 @@
+# ENTORNO VIRUTAL
+.venv/
+
+# CACHE
+__pycache__/
+
+# VARIABLES DE ENTORNO
+.env*
