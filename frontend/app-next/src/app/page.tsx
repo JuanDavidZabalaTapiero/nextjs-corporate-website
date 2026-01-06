@@ -4,6 +4,9 @@ import Image from 'next/image'
 import { sanityClient } from '@/src/lib/sanity'
 import { urlFor } from '@/src/lib/sanityImage'
 
+// CHECK POR SANITY
+export const revalidate = 60
+
 export const metadata: Metadata = {
   title: "Inicio",
 };
@@ -20,7 +23,7 @@ const query = `
 `
 
 export default async function HomePage() {
-  const data = await sanityClient.fetch(query, {}, { cache: 'no-store' })
+  const data = await sanityClient.fetch(query)
 
   return (
     <>
