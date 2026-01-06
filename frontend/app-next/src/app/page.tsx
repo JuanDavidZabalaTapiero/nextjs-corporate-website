@@ -20,7 +20,7 @@ const query = `
 `
 
 export default async function HomePage() {
-  const data = await sanityClient.fetch(query)
+  const data = await sanityClient.fetch(query, {}, { cache: 'no-store' })
 
   return (
     <>
