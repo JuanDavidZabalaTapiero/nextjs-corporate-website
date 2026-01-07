@@ -45,11 +45,11 @@ export default function ContactForm() {
                 body: formData,
             });
 
-            if (!res.ok) {
-                throw new Error("Error al enviar el formulario");
-            }
-
             const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Error al enviar el formulario");
+            }
 
             setSuccess(data.message);
 
@@ -58,7 +58,6 @@ export default function ContactForm() {
 
         } catch (err: any) {
             if (err instanceof TypeError) {
-                // Error de red (Flask apagado, CORS, URL incorrecta)
                 setError("No se pudo conectar con el servidor. Intenta más tarde.");
             } else {
                 setError(err.message || "Error inesperado");

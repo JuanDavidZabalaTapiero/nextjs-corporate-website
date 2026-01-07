@@ -26,19 +26,29 @@ export default async function HomePage() {
   const data = await sanityClient.fetch(query)
 
   return (
-    <>
-      <h1 className="text-center font-bold">{data?.title}</h1>
-      <h2 className="text-center">{data?.subtitle}</h2>
+    <section className="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+          {data?.title}
+        </h1>
+
+        <p className="mt-4 text-lg text-gray-600">
+          {data?.subtitle}
+        </p>
+      </div>
+
       {data.heroImage && (
-        <Image
-          src={urlFor(data.heroImage).width(1200).url()}
-          alt={data.heroImage.alt ?? 'Imagen principal'}
-          width={800}
-          height={600}
-          className="mx-auto"
-          priority
-        />
+        <div className="overflow-hidden rounded-2xl shadow-xl">
+          <Image
+            src={urlFor(data.heroImage).width(1200).url()}
+            alt={data.heroImage.alt ?? 'Imagen principal'}
+            width={1200}
+            height={800}
+            className="w-full object-cover"
+            priority
+          />
+        </div>
       )}
-    </>
+    </section>
   )
 }
