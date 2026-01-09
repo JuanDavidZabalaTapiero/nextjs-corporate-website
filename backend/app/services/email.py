@@ -1,35 +1,30 @@
 import os
-import smtplib
-from email.message import EmailMessage
+import base64
+import resend
 
-SMTP_SERVER = os.getenv("SMTP_SERVER")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
 MAIL_FROM = os.getenv("MAIL_FROM")
 MAIL_TO = os.getenv("MAIL_TO")
 
+def send_email_with_attachment(subject, body, filename, file_bytes):
 
-def send_email_with_attachment(subject, body, attachment, filename):
-    msg = EmailMessage()
-    msg["From"] = MAIL_FROM
-    msg["To"] = MAIL_TO
-    msg["Subject"] = subject
+    try:
+        attachment_base64 = base64.b64encode(file_bytes).decode("utf-8")
 
-    msg.set_content(body)
+        response = resend.Emails.send({
+            "from": MAIL_FROM,
+            "to": MAIL_TO,
+            "subject": subject,
+            "html": body.replace("\n", "<br>"),
+            "attachments": [{
+                "filename": filename,
+                "content": attachment_base64
+            }]
+        })
 
-    # Leer el archivo (PDF)
-    file_bytes = attachment.read()
-
-    msg.add_attachment(
-        file_bytes,
-        maintype="application",
-        subtype="pdf",
-        filename=filename
-    )
-
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.send_message(msg)
+        return {"success": True}
+    
+    except Exception:
+        return {"success": False}

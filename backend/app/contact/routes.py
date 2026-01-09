@@ -21,22 +21,24 @@ def send_cv():
 
     # Nombre seguro del archivo
     filename = secure_filename(file.filename)
+    file_bytes = file.read()
 
-    # ---- Cuerpo del correo ----
     body = f"""
-Nueva hoja de vida recibida
+    Nueva hoja de vida recibida<br>
+    <strong>Nombre:</strong> {name}<br>
+    El CV va adjunto en PDF.
+    """
 
-Nombre: {name}
-
-El CV va adjunto en PDF.
-"""
-
-    # ---- Envío del correo ----
-    send_email_with_attachment(
+    result = send_email_with_attachment(
         subject="Nueva hoja de vida desde la web",
         body=body,
-        attachment=file,
-        filename=filename
+        filename=filename,
+        file_bytes=file_bytes
     )
 
+    # ERROR EN ENVÍO
+    if not result["success"]:
+        return jsonify({"message": "No se pudo enviar el mensaje en este momento. Intenta más tarde."}), 500
+    
+    # CORREO ENVIADO
     return jsonify({"message": "Hoja de vida enviada correctamente"})
